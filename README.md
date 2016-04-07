@@ -4,12 +4,13 @@
 Only thing it differs from `encoding/json` is `Unmarshal` and `Decode` functions. They are faster.
 
 ## Getting Started
-go get github.com/intel-go/fastjson
-
+```
+$go get github.com/intel-go/fastjson
+```
 ##Perfomance
 It depends on the content of your json structures, not the structure you parse to.
 * if `.json` has a lot of strings or numbers, fastjson is **2x** quicker, than `encoding/json`
-* otherwize fastjson is `1.5x` quicker, than `encoding/json`
+* otherwise, fastjson is `1.5x` quicker, than `encoding/json`
 
 ##Example
 ```Go
