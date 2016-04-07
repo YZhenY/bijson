@@ -39,4 +39,4 @@ func main() {
 ```
 ##API
 API is the same as in encoding/json
-[![GoDoc](https://golang.org/pkg/encoding/json/#Unmarshal)
+[GoDoc](https://golang.org/pkg/encoding/json/#Unmarshal)
