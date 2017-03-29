@@ -1,15 +1,15 @@
 # fastjson: optimized standard library JSON for Go
 
 `fastjson` has the same API as json from standard library `encoding/json`. 
-Only thing it differs from `encoding/json` is `Unmarshal` and `Decode` functions. They are faster.
+The `Unmarshal` and `Decode` functions are faster, but everything else is the same as `encoding/json`
 
 ## Getting Started
 ```
 $go get github.com/intel-go/fastjson
 ```
 ##Perfomance
-It depends on the content of your json structures, not the structure you parse to.
-If `.json` has a lot of strings or numbers, fastjson is significantly faster, than `encoding/json`
+The performance depends on the content of your json structures, not the structure you parse to.
+If `.json` has a lot of strings or numbers, fastjson is significantly faster than `encoding/json`
 
 
 ##Example
@@ -39,5 +39,5 @@ func main() {
 }
 ```
 ##API
-API is the same as in encoding/json
+API is the same as encoding/json
 [GoDoc](https://golang.org/pkg/encoding/json/#Unmarshal)
