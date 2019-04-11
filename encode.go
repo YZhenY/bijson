@@ -16,6 +16,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"math"
+	"math/big"
 	"reflect"
 	"runtime"
 	"sort"
@@ -374,6 +375,10 @@ func newTypeEncoder(t reflect.Type, allowAddr bool) encoderFunc {
 			return newCondAddrEncoder(addrTextMarshalerEncoder, newTypeEncoder(t, false))
 		}
 	}
+	// big.Int encoder provided here
+	if t.Name() == "Int" {
+		return bigIntEncoder
+	}
 
 	switch t.Kind() {
 	case reflect.Bool:
@@ -402,6 +407,20 @@ func newTypeEncoder(t reflect.Type, allowAddr bool) encoderFunc {
 		return newPtrEncoder(t)
 	default:
 		return unsupportedTypeEncoder
+	}
+}
+
+func bigIntEncoder(e *encodeState, v reflect.Value, quoted bool) {
+	bigInt := v.Interface().(big.Int)
+	if quoted {
+		e.WriteByte('"')
+	}
+	_, err := e.WriteString(bigInt.Text(16))
+	if quoted {
+		e.WriteByte('"')
+	}
+	if err != nil {
+		e.error(&MarshalerError{v.Type(), err})
 	}
 }
 

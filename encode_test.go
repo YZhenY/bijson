@@ -7,6 +7,7 @@ package fastjson
 import (
 	"bytes"
 	"math"
+	"math/big"
 	"reflect"
 	"testing"
 	"unicode"
@@ -51,6 +52,22 @@ var optionalsExpected = `{
  "sto": {}
 }`
 
+func TestBigInt(t *testing.T) {
+	var bn big.Int
+	bn.SetInt64(int64(12))
+	got, err := Marshal(bn)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expected := bn.Text(16)
+
+	if string(got) != expected {
+		t.Log(got)
+		t.Log(expected)
+		t.Fatal("did not encode bigInt right")
+	}
+}
 func TestOmitEmpty(t *testing.T) {
 	var o Optionals
 	o.Sw = "something"
