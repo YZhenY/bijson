@@ -1,21 +1,17 @@
-# fastjson: optimized standard library JSON for Go
+# bijson: optimized standard library JSON for Go
 
-`fastjson` has the same API as json from standard library `encoding/json`. 
-The `Unmarshal` and `Decode` functions are faster, but everything else is the same as `encoding/json`
+Clone of `fastjson` by intel-go,`bijson` has the same API as json from standard library `encoding/json`. 
 
 ## Getting Started
 ```
-$go get github.com/intel-go/fastjson
+$go get github.com/YZhenY/bijson
 ```
-##Perfomance
-The performance depends on the content of your json structures, not the structure you parse to.
-If `.json` has a lot of strings or numbers, fastjson is significantly faster than `encoding/json`
 
 
 ##Example
 ```Go
 import (
-    "github.com/intel-go/fastjson"
+    "github.com/YZhenY/bijson"
     "fmt"
 )
 
@@ -29,7 +25,7 @@ func main() {
 	Order string
     }
     var animals []Animal
-    err := fastjson.Unmarshal(jsonBlob, &animals)
+    err := bijson.Unmarshal(jsonBlob, &animals)
     if err != nil {
 	fmt.Println("error:", err)
     }
