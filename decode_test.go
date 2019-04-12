@@ -671,20 +671,26 @@ func TestUnmarshalBigInt(t *testing.T) {
 	if err := Unmarshal([]byte(`"c8"`), &i); err != nil {
 		t.Fatalf("Unmarshal: %v", err)
 	}
-	t.Log(expectedBigInt)
-	t.Log(i)
+	if expectedBigInt.Cmp(&i) != 0 {
+		t.Log(expectedBigInt)
+		t.Log(i)
+		t.Fatal("big int did not decode right")
+	}
 }
 
-// func TestUnmarshalBigIntStruct(t *testing.T) {
-// 	var i BigIntTestStruct
-// 	var expectedBigInt big.Int
-// 	expectedBigInt.SetInt64(int64(200))
-// 	if err := Unmarshal([]byte(`{"testStr":"yoyo","ourBigInt":c8,"testInt":0}`), &i); err != nil {
-// 		t.Fatalf("Unmarshal: %v", err)
-// 	}
-// 	t.Log(expectedBigInt)
-// 	t.Log(i)
-// }
+func TestUnmarshalBigIntStruct(t *testing.T) {
+	var i BigIntTestStruct
+	var expectedBigInt big.Int
+	expectedBigInt.SetInt64(int64(200))
+	if err := Unmarshal([]byte(`{"testStr":"yoyo","ourBigInt":"c8","testInt":0}`), &i); err != nil {
+		t.Fatalf("Unmarshal: %v", err)
+	}
+	if expectedBigInt.Cmp(&i.OurBigInt) != 0 {
+		t.Log(expectedBigInt)
+		t.Log(i)
+		t.Fatal("big int did not decode right")
+	}
+}
 
 func TestUnmarshalInterface(t *testing.T) {
 	var xint Xint

@@ -68,9 +68,9 @@ func TestBigInt(t *testing.T) {
 
 	expected := bn.Text(16)
 
-	if string(got) != `"BI`+expected+`"` {
+	if string(got) != `"`+expected+`"` {
 		t.Log(string(got))
-		t.Log(`"BI` + expected + `"`)
+		t.Log(`"` + expected + `"`)
 		t.Fatal("did not encode bigInt right")
 	}
 	testStr := "yoyo"

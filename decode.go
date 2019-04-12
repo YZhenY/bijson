@@ -13,6 +13,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"math/big"
 	"reflect"
 	"runtime"
 	"strconv"
@@ -350,23 +351,18 @@ func (d *decodeState) value(v reflect.Value) {
 		d.next()
 		return
 	}
-	fmt.Println("ReflectValue: ", v)
 
 	switch op := d.peekState(); op {
 	default:
-		fmt.Println("op err", op)
 		d.error(errPhase)
 
 	case scanBeginArray:
-		fmt.Println("op scanBeginArray", op)
 		d.array(v)
 
 	case scanBeginObject:
-		fmt.Println("op scanBeginObject", op)
 		d.object(v)
 
 	case scanBeginLiteral:
-		fmt.Println("op scanBeginLiteral", op)
 		d.literal(v)
 	}
 }
@@ -411,6 +407,11 @@ func (d *decodeState) indirect(v reflect.Value, decodingNull bool) (Unmarshaler,
 	for {
 		// Load value from interface, but only if the result will be
 		// usefully addressable.
+		// just for big.int
+		if v.Type().String() == "*big.Int" {
+			break
+		}
+
 		if v.Kind() == reflect.Interface && !v.IsNil() {
 			e := v.Elem()
 			if e.Kind() == reflect.Ptr && !e.IsNil() && (!decodingNull || e.Elem().Kind() == reflect.Ptr) {
@@ -439,6 +440,7 @@ func (d *decodeState) indirect(v reflect.Value, decodingNull bool) (Unmarshaler,
 		}
 		v = v.Elem()
 	}
+
 	return nil, nil, v
 }
 
@@ -688,7 +690,6 @@ func (d *decodeState) literal(v reflect.Value) {
 	if op != scanEndLiteral {
 		d.error(errPhase)
 	}
-	fmt.Println("data store", string(d.data[start:end+1]))
 	d.literalStore(d.data[start:end+1], v, false)
 }
 
@@ -789,6 +790,13 @@ func (d *decodeState) literalStore(item []byte, v reflect.Value, fromQuoted bool
 				d.error(errPhase)
 			}
 		}
+		// big.Int decoding done here
+		if v.Type().String() == "*big.Int" {
+			b := v.Interface().(*big.Int)
+			b.SetString(string(s), 16)
+			break
+		}
+
 		switch v.Kind() {
 		default:
 			d.saveError(&UnmarshalTypeError{"string", v.Type(), int64(d.peekPos() + 1)})
