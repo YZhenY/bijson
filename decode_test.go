@@ -679,7 +679,7 @@ func TestUnmarshalBigInt(t *testing.T) {
 }
 
 func TestUnmarshalBigIntStruct(t *testing.T) {
-	var i BigIntTestStruct
+	var i bigIntTestStruct
 	var expectedBigInt big.Int
 	expectedBigInt.SetInt64(int64(200))
 	if err := Unmarshal([]byte(`{"testStr":"yoyo","ourBigInt":"c8","testInt":0}`), &i); err != nil {
