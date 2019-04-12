@@ -52,9 +52,15 @@ var optionalsExpected = `{
  "sto": {}
 }`
 
+type BigIntTestStruct struct {
+	TestStr   string  `json:"testStr"`
+	OurBigInt big.Int `json:"ourBigInt"`
+	TestInt   int     `json:"testInt"`
+}
+
 func TestBigInt(t *testing.T) {
 	var bn big.Int
-	bn.SetInt64(int64(12))
+	bn.SetInt64(int64(200))
 	got, err := Marshal(bn)
 	if err != nil {
 		t.Fatal(err)
@@ -62,11 +68,20 @@ func TestBigInt(t *testing.T) {
 
 	expected := bn.Text(16)
 
-	if string(got) != expected {
-		t.Log(got)
-		t.Log(expected)
+	if string(got) != `"`+expected+`"` {
+		t.Log(string(got))
+		t.Log(`"` + expected + `"`)
 		t.Fatal("did not encode bigInt right")
 	}
+	testStr := "yoyo"
+	testStruct := BigIntTestStruct{TestStr: testStr, OurBigInt: bn}
+
+	b, err := Marshal(testStruct)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(testStruct)
+	t.Log(string(b))
 }
 func TestOmitEmpty(t *testing.T) {
 	var o Optionals

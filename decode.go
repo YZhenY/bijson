@@ -350,17 +350,23 @@ func (d *decodeState) value(v reflect.Value) {
 		d.next()
 		return
 	}
+	fmt.Println("ReflectValue: ", v)
+
 	switch op := d.peekState(); op {
 	default:
+		fmt.Println("op err", op)
 		d.error(errPhase)
 
 	case scanBeginArray:
+		fmt.Println("op scanBeginArray", op)
 		d.array(v)
 
 	case scanBeginObject:
+		fmt.Println("op scanBeginObject", op)
 		d.object(v)
 
 	case scanBeginLiteral:
+		fmt.Println("op scanBeginLiteral", op)
 		d.literal(v)
 	}
 }
@@ -682,6 +688,7 @@ func (d *decodeState) literal(v reflect.Value) {
 	if op != scanEndLiteral {
 		d.error(errPhase)
 	}
+	fmt.Println("data store", string(d.data[start:end+1]))
 	d.literalStore(d.data[start:end+1], v, false)
 }
 

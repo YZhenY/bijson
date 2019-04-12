@@ -412,15 +412,15 @@ func newTypeEncoder(t reflect.Type, allowAddr bool) encoderFunc {
 
 func bigIntEncoder(e *encodeState, v reflect.Value, quoted bool) {
 	bigInt := v.Interface().(big.Int)
+
 	if quoted {
-		e.WriteByte('"')
-	}
-	_, err := e.WriteString(bigInt.Text(16))
-	if quoted {
-		e.WriteByte('"')
-	}
-	if err != nil {
-		e.error(&MarshalerError{v.Type(), err})
+		sb, err := Marshal(bigInt.Text(16))
+		if err != nil {
+			e.error(err)
+		}
+		e.string(string(sb))
+	} else {
+		e.string(bigInt.Text(16))
 	}
 }
 
