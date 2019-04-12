@@ -420,7 +420,7 @@ func bigIntEncoder(e *encodeState, v reflect.Value, quoted bool) {
 		}
 		e.string(string(sb))
 	} else {
-		e.string(bigInt.Text(16))
+		e.string("BI" + bigInt.Text(16))
 	}
 }
 
