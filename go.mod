@@ -1,3 +1,3 @@
-module github.com/YZhenY/bijson
+module github.com/torusresearch/bijson
 
 go 1.2.3

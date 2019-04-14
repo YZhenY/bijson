@@ -11,6 +11,8 @@ import (
 	"reflect"
 	"testing"
 	"unicode"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type Optionals struct {
@@ -52,10 +54,44 @@ var optionalsExpected = `{
  "sto": {}
 }`
 
-type BigIntTestStruct struct {
+type bigIntTestStruct struct {
 	TestStr   string  `json:"testStr"`
 	OurBigInt big.Int `json:"ourBigInt"`
 	TestInt   int     `json:"testInt"`
+}
+
+type pointz struct {
+	X big.Int
+	Y big.Int
+}
+
+type sharingID string
+type pssMsgRecover struct {
+	SharingID sharingID
+	V         []pointz
+}
+
+func TestMarshalNestedBigInt(t *testing.T) {
+	p1 := pssMsgRecover{
+		SharingID: sharingID("testtypeserialization"),
+		V: []pointz{
+			pointz{
+				X: *big.NewInt(int64(2)),
+				Y: *big.NewInt(int64(4)),
+			},
+			pointz{
+				X: *big.NewInt(int64(6)),
+				Y: *big.NewInt(int64(8)),
+			},
+		},
+	}
+	var p2 pssMsgRecover
+	byt, err := Marshal(p1)
+	err = Unmarshal(byt, &p2)
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.True(t, reflect.DeepEqual(p1, p2))
 }
 
 func TestBigInt(t *testing.T) {
@@ -74,7 +110,7 @@ func TestBigInt(t *testing.T) {
 		t.Fatal("did not encode bigInt right")
 	}
 	testStr := "yoyo"
-	testStruct := BigIntTestStruct{TestStr: testStr, OurBigInt: bn}
+	testStruct := bigIntTestStruct{TestStr: testStr, OurBigInt: bn}
 
 	b, err := Marshal(testStruct)
 	if err != nil {
